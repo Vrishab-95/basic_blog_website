@@ -102,7 +102,15 @@ class BlogPost(db.Model):
         "User", back_populates="posts"
     )
 
-    comments:Mapped[list["Comments"]] = relationship("Comments", back_populates="parent_post")
+    
+    comments: Mapped[list["Comments"]] = relationship(
+        "Comments",
+        back_populates="parent_post",
+        cascade="all, delete-orphan"
+    )
+
+
+    # comments:Mapped[list["Comments"]] = relationship("Comments", back_populates="parent_post")
     # id: Mapped["User"] = relationship(back_populates="author_id")
 
 class Comments(db.Model):
