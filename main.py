@@ -223,7 +223,13 @@ def show_post(post_id):
 
     comment_body=request.form["comment"]
 
-    db.session.add(Comments(text=comment_body,author_id=current_user.id,post_id=post_id))
+    # db.session.add(Comments(text=comment_body,author_id=current_user.id,post_id=post_id))
+    new_comment = Comment(
+            text=form.comment_text.data,
+            comment_author=current_user,
+            parent_post=requested_post
+        )
+    db.session.add(new_comment)
     db.session.commit()
 
     return redirect(url_for("show_post",post=requested_post,form=form,post_id=post_id))
