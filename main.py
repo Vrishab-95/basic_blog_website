@@ -224,7 +224,7 @@ def show_post(post_id):
     comment_body=request.form["comment"]
 
     # db.session.add(Comments(text=comment_body,author_id=current_user.id,post_id=post_id))
-    new_comment = Comment(
+    new_comment = Comments(
             text=form.comment_text.data,
             comment_author=current_user,
             parent_post=requested_post
