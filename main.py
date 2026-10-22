@@ -210,29 +210,23 @@ def get_all_posts():
 # TODO: Allow logged-in users to comment on posts
 @app.route("/post/<int:post_id>",methods=["GET","POST"])
 def show_post(post_id):
-    requested_post = db.get_or_404(BlogPost, post_id)
+    form = CommentForm()
+    requested_post = BlogPost.query.get(post_id)
 
-    form=CommentForm()
+    if form.validate_on_submit():
+        if not current_user.is_authenticated:
+            flash("You need to login or register to comment.")
+            return redirect(url_for("login"))
 
-    if request.method=="GET":
-        return render_template("post.html", post=requested_post,form=form)
-
-    if not current_user.is_authenticated:
-        flash("Please login to comment on posts")
-        return redirect(url_for("login"))
-
-    comment_body=request.form["comment"]
-
-    # db.session.add(Comments(text=comment_body,author_id=current_user.id,post_id=post_id))
-    new_comment = Comments(
-            text=form.comment_text.data,
-            comment_author=current_user,
+        new_comment = Comments(
+            text=form.comment.data,
+            author=current_user,
             parent_post=requested_post
         )
-    db.session.add(new_comment)
-    db.session.commit()
+        db.session.add(new_comment)
+        db.session.commit()
 
-    return redirect(url_for("show_post",post=requested_post,form=form,post_id=post_id))
+    return render_template("post.html", post=requested_post, form=form, current_user=current_user)
 
 
 # TODO: Use a decorator so only an admin user can create a new post
