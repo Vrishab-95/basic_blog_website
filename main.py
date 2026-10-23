@@ -131,9 +131,6 @@ with app.app_context():
 def admin_only(function):
     @wraps(function)
     def decorator_function(*args, **kwargs):
-        print(current_user.is_authenticated)
-        print(current_user.id)
-
         if current_user.id!=1:
             return abort(403)
 
